@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Share Board</title>
+  <meta name="description" content="社内のAI情報を、ひと目で見やすく。メンバー別にツール、ニュース、活用事例を整理できる掲示板型ポータルです。">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: "#eef2ff",
+              100: "#e0e7ff",
+              500: "#6366f1",
+              600: "#4f46e5",
+              700: "#4338ca"
+            },
+            accent: {
+              400: "#38bdf8",
+              500: "#0ea5e9"
+            }
+          },
+          boxShadow: {
+            soft: "0 20px 50px -24px rgba(15, 23, 42, 0.28)"
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(99, 102, 241, 0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(14, 165, 233, 0.18), transparent 24%),
+        #f8fafc;
+    }
+
+    .glass {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .tab-active {
+      background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+      color: #ffffff;
+      box-shadow: 0 12px 30px -18px rgba(79, 70, 229, 0.85);
+    }
+
+    .panel-hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body class="text-slate-800">
+  <div class="mx-auto min-h-screen max-w-7xl px-4 sm:px-6 lg:px-8">
+    <header id="home" class="sticky top-0 z-30 pt-4">
+      <div class="glass flex items-center justify-between rounded-2xl border border-white/70 px-5 py-4 shadow-soft">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.25em] text-brand-600">AI Share Board</p>
+          <p class="mt-1 text-sm text-slate-600">チームで使うAI情報を、見やすくひとまとめに</p>
+        </div>
+        <nav class="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
+          <a class="transition hover:text-brand-600" href="#home">Home</a>
+          <a class="transition hover:text-brand-600" href="#members">Members</a>
+          <a class="transition hover:text-brand-600" href="#guidelines">Guidelines</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="pb-16">
+      <section id="hero" class="grid gap-10 py-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:py-16">
+        <div>
+          <div class="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white/80 px-4 py-2 text-sm text-brand-700 shadow-sm">
+            <span class="h-2 w-2 rounded-full bg-accent-500"></span>
+            社内向け AI ナレッジ共有ポータル
+          </div>
+          <h1 class="mt-6 text-4xl font-black leading-tight text-slate-900 sm:text-5xl">
+            社内のAI情報を、
+            <span class="text-brand-600">ひと目で見やすく。</span>
+          </h1>
+          <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+            おすすめツール、活用メモ、参考リンクを、メンバーごとのタブで整理。
+            情報を埋もれさせず、誰でもすぐに探せる掲示板型ページです。
+          </p>
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-700" href="#members">メンバーを見る</a>
+            <a class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-brand-200 hover:text-brand-700" href="#guidelines">共有ルールを見る</a>
+          </div>
+          <dl class="mt-10 grid gap-4 sm:grid-cols-3">
+            <div class="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-soft">
+              <dt class="text-sm text-slate-500">カテゴリ</dt>
+              <dd class="mt-2 text-2xl font-bold text-slate-900">7+</dd>
+            </div>
+            <div class="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-soft">
+              <dt class="text-sm text-slate-500">共有メンバー</dt>
+              <dd class="mt-2 text-2xl font-bold text-slate-900">4名</dd>
+            </div>
+            <div class="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-soft">
+              <dt class="text-sm text-slate-500">更新しやすさ</dt>
+              <dd class="mt-2 text-2xl font-bold text-slate-900">1 HTML</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="relative">
+          <div class="absolute -left-6 top-8 hidden h-28 w-28 rounded-full bg-brand-100 blur-3xl sm:block"></div>
+          <div class="absolute -right-6 bottom-4 hidden h-28 w-28 rounded-full bg-sky-100 blur-3xl sm:block"></div>
+          <div class="overflow-hidden rounded-[2rem] border border-white/70 bg-white p-3 shadow-soft">
+            <img
+              class="h-[440px] w-full rounded-[1.4rem] object-cover"
+              src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80"
+              alt="AIとワークスペースをイメージしたヒーロー画像"
+            >
+            <div class="-mt-24 ml-4 mr-4 rounded-2xl border border-white/80 bg-white/90 p-5 shadow-soft">
+              <p class="text-sm font-semibold text-brand-600">Quick Board View</p>
+              <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                <div class="rounded-xl bg-slate-50 p-4">
+                  <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Today</p>
+                  <p class="mt-2 text-sm font-semibold text-slate-800">ニュース、ツール、プロンプトを整理</p>
+                </div>
+                <div class="rounded-xl bg-slate-50 p-4">
+                  <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Teams</p>
+                  <p class="mt-2 text-sm font-semibold text-slate-800">メンバー単位で見たい情報に最短でアクセス</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="members" class="py-8">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.25em] text-brand-600">Members</p>
+            <h2 class="mt-2 text-3xl font-bold text-slate-900">メンバーごとに情報を切り替え</h2>
+            <p class="mt-3 max-w-2xl text-base leading-7 text-slate-600">
+              チーム全体の更新を一覧で確認しつつ、個人ごとのおすすめ情報だけを絞り込める構成です。
+            </p>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-sm">
+            モバイルでは左右にスクロールできます
+          </div>
+        </div>
+
+        <div class="mt-8 overflow-x-auto pb-2">
+          <div class="flex min-w-max gap-3">
+            <button class="member-tab tab-active rounded-full px-5 py-3 text-sm font-semibold transition" data-target="all">全体</button>
+            <button class="member-tab rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-600 transition hover:border-brand-200 hover:text-brand-700" data-target="yamada">山田</button>
+            <button class="member-tab rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-600 transition hover:border-brand-200 hover:text-brand-700" data-target="sato">佐藤</button>
+            <button class="member-tab rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-600 transition hover:border-brand-200 hover:text-brand-700" data-target="suzuki">鈴木</button>
+            <button class="member-tab rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-600 transition hover:border-brand-200 hover:text-brand-700" data-target="tanaka">田中</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="member-panels" class="py-4">
+        <div class="member-panel" data-panel="all">
+          <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <article class="rounded-3xl border border-white/70 bg-white p-5 shadow-soft">
+              <img class="h-44 w-full rounded-2xl object-cover" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80" alt="ツール情報カードのサムネイル">
+              <div class="mt-5 flex items-center justify-between">
+                <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">ツール</span>
+                <span class="text-sm text-slate-400">2026.03.28</span>
+              </div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">Gemini活用メモ</h3>
+              <p class="mt-3 text-sm leading-7 text-slate-600">社内議事録の要約や文書整理で使えるポイントを整理。導入時の注意点と定番の質問例も掲載。</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#要約</span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#議事録</span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#山田</span>
+              </div>
+              <a class="mt-6 inline-flex items-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600" href="#">詳細を見る</a>
+            </article>
+
+            <article class="rounded-3xl border border-white/70 bg-white p-5 shadow-soft">
+              <img class="h-44 w-full rounded-2xl object-cover" src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80" alt="ニュース情報カードのサムネイル">
+              <div class="mt-5 flex items-center justify-between">
+                <span class="rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">ニュース</span>
+                <span class="text-sm text-slate-400">2026.03.27</span>
+              </div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">AIニュースまとめ</h3>
+              <p class="mt-3 text-sm leading-7 text-slate-600">今週気になった生成AIニュースを3つ抜粋。チームに関係する話題だけを短く整理したダイジェスト。</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#週次共有</span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#佐藤</span>
+              </div>
+              <a class="mt-6 inline-flex items-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600" href="#">記事へ移動</a>
+            </article>
+
+            <article class="rounded-3xl border border-white/70 bg-white p-5 shadow-soft">
+              <img class="h-44 w-full rounded-2xl object-cover" src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=900&q=80" alt="プロンプト集カードのサムネイル">
+              <div class="mt-5 flex items-center justify-between">
+                <span class="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">プロンプト</span>
+                <span class="text-sm text-slate-400">2026.03.25</span>
+              </div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">業務改善プロンプト集</h3>
+              <p class="mt-3 text-sm leading-7 text-slate-600">メール文案、議事録整理、アイデア出し向けの定型文を整理。迷ったときの出発点として使える内容です。</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#定型文</span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#鈴木</span>
+              </div>
+              <a class="mt-6 inline-flex items-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600" href="#">開く</a>
+            </article>
+          </div>
+        </div>
+
+        <div class="member-panel panel-hidden" data-panel="yamada">
+          <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <article class="rounded-3xl border border-white/70 bg-white p-5 shadow-soft">
+              <img class="h-44 w-full rounded-2xl object-cover" src="https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&w=900&q=80" alt="山田のカード画像">
+              <div class="mt-5 flex items-center justify-between">
+                <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">ツール</span>
+                <span class="text-sm text-slate-400">2026.03.28</span>
+              </div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">Gemini活用メモ</h3>
+              <p class="mt-3 text-sm leading-7 text-slate-600">会議要約、文書の下書き、情報整理で使えるプロンプトをコンパクトにまとめた社内向けメモ。</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#Gemini</span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#文書整理</span>
+              </div>
+              <a class="mt-6 inline-flex items-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600" href="#">詳細を見る</a>
+            </article>
+
+            <article class="rounded-3xl border border-white/70 bg-white p-5 shadow-soft">
+              <div class="flex h-44 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-100 to-sky-100 text-center">
+                <p class="max-w-[14rem] text-lg font-semibold text-slate-700">AIを使った議事録整理のワークフロー</p>
+              </div>
+              <div class="mt-5 flex items-center justify-between">
+                <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">活用事例</span>
+                <span class="text-sm text-slate-400">2026.03.26</span>
+              </div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">会議後15分で共有文作成</h3>
+              <p class="mt-3 text-sm leading-7 text-slate-600">録音文字起こしから共有文までの流れをテンプレート化。誰でも同じ品質でまとめやすくなります。</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#会議</span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#テンプレート</span>
+              </div>
+              <a class="mt-6 inline-flex items-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600" href="#">フローを見る</a>
+            </article>
+          </div>
+        </div>
+
+        <div class="member-panel panel-hidden" data-panel="sato">
+          <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <article class="rounded-3xl border border-white/70 bg-white p-5 shadow-soft">
+              <img class="h-44 w-full rounded-2xl object-cover" src="https://images.unsplash.com/photo-1516321165247-4aa89a48be28?auto=format&fit=crop&w=900&q=80" alt="佐藤のカード画像">
+              <div class="mt-5 flex items-center justify-between">
+                <span class="rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">ニュース</span>
+                <span class="text-sm text-slate-400">2026.03.27</span>
+              </div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">AIニュースまとめ</h3>
+              <p class="mt-3 text-sm leading-7 text-slate-600">チームに影響しそうなアップデートだけを抜き出し、判断材料として使いやすい形に整理。</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#週報</span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#生成AI</span>
+              </div>
+              <a class="mt-6 inline-flex items-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600" href="#">記事へ移動</a>
+            </article>
+
+            <article class="rounded-3xl border border-white/70 bg-white p-5 shadow-soft">
+              <div class="flex h-44 items-center justify-center rounded-2xl bg-slate-100">
+                <p class="max-w-[14rem] text-center text-lg font-semibold text-slate-700">便利リンクと出典を1か所に集約</p>
+              </div>
+              <div class="mt-5 flex items-center justify-between">
+                <span class="rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">学習メモ</span>
+                <span class="text-sm text-slate-400">2026.03.24</span>
+              </div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">調査リンク集</h3>
+              <p class="mt-3 text-sm leading-7 text-slate-600">ベンダー公式、比較記事、使い方ガイドを用途別に整理。調査の初速を上げるためのベース集です。</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#出典付き</span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#リンク集</span>
+              </div>
+              <a class="mt-6 inline-flex items-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600" href="#">リンクを開く</a>
+            </article>
+          </div>
+        </div>
+
+        <div class="member-panel panel-hidden" data-panel="suzuki">
+          <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <article class="rounded-3xl border border-white/70 bg-white p-5 shadow-soft">
+              <img class="h-44 w-full rounded-2xl object-cover" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80" alt="鈴木のカード画像">
+              <div class="mt-5 flex items-center justify-between">
+                <span class="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">プロンプト</span>
+                <span class="text-sm text-slate-400">2026.03.25</span>
+              </div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">業務改善プロンプト集</h3>
+              <p class="mt-3 text-sm leading-7 text-slate-600">メール、議事録、要点整理、アイデア出しをすぐ試せる定型プロンプトとしてまとめています。</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#効率化</span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#テンプレ</span>
+              </div>
+              <a class="mt-6 inline-flex items-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600" href="#">開く</a>
+            </article>
+
+            <article class="rounded-3xl border border-white/70 bg-white p-5 shadow-soft">
+              <div class="flex h-44 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-50 to-orange-100">
+                <p class="max-w-[14rem] text-center text-lg font-semibold text-slate-700">定型文から作る業務自動化の下地</p>
+              </div>
+              <div class="mt-5 flex items-center justify-between">
+                <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">業務効率化</span>
+                <span class="text-sm text-slate-400">2026.03.22</span>
+              </div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">問い合わせ整理テンプレート</h3>
+              <p class="mt-3 text-sm leading-7 text-slate-600">問い合わせ内容の分類、返信草案、引き継ぎメモ作成を一連で進めるためのテンプレートです。</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#問い合わせ</span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#自動化</span>
+              </div>
+              <a class="mt-6 inline-flex items-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600" href="#">テンプレートを見る</a>
+            </article>
+          </div>
+        </div>
+
+        <div class="member-panel panel-hidden" data-panel="tanaka">
+          <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <article class="rounded-3xl border border-white/70 bg-white p-5 shadow-soft">
+              <img class="h-44 w-full rounded-2xl object-cover" src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=900&q=80" alt="田中のカード画像">
+              <div class="mt-5 flex items-center justify-between">
+                <span class="rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700">動画・記事</span>
+                <span class="text-sm text-slate-400">2026.03.21</span>
+              </div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">週末インプットまとめ</h3>
+              <p class="mt-3 text-sm leading-7 text-slate-600">気になった記事と動画を短い所感付きで整理。あとから見返しやすいように学びの要点も記録しています。</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#学習</span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#ナレッジ</span>
+              </div>
+              <a class="mt-6 inline-flex items-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600" href="#">まとめを見る</a>
+            </article>
+
+            <article class="rounded-3xl border border-white/70 bg-white p-5 shadow-soft">
+              <div class="flex h-44 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-50 to-blue-100">
+                <p class="max-w-[14rem] text-center text-lg font-semibold text-slate-700">社内で共有しやすい投稿フォーマット</p>
+              </div>
+              <div class="mt-5 flex items-center justify-between">
+                <span class="rounded-full bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-700">学習メモ</span>
+                <span class="text-sm text-slate-400">2026.03.20</span>
+              </div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">投稿テンプレート案</h3>
+              <p class="mt-3 text-sm leading-7 text-slate-600">タイトル、概要、出典、用途、更新日をそろえるだけで読みやすくなる共有テンプレートの試作版です。</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#フォーマット</span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">#共有方針</span>
+              </div>
+              <a class="mt-6 inline-flex items-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600" href="#">テンプレートを見る</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="guidelines" class="py-12">
+        <div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-900 text-white shadow-soft">
+          <div class="grid gap-10 px-6 py-10 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:px-12 lg:py-12">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.25em] text-sky-300">Guidelines</p>
+              <h2 class="mt-3 text-3xl font-bold">AI活用ルール / 共有方針</h2>
+              <p class="mt-4 text-base leading-8 text-slate-300">
+                投稿しやすく、読む側も迷わないように、最低限のルールだけをシンプルに整理しています。
+              </p>
+            </div>
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <p class="text-sm font-semibold text-sky-300">01</p>
+                <p class="mt-3 text-lg font-semibold">機密情報は投稿しない</p>
+                <p class="mt-2 text-sm leading-7 text-slate-300">顧客情報、未公開情報、個人情報は扱わず、社内共有に適した内容だけを掲載します。</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <p class="text-sm font-semibold text-sky-300">02</p>
+                <p class="mt-3 text-lg font-semibold">出典リンクを添える</p>
+                <p class="mt-2 text-sm leading-7 text-slate-300">ニュースや外部情報は確認元を明記し、あとから追える状態を保ちます。</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <p class="text-sm font-semibold text-sky-300">03</p>
+                <p class="mt-3 text-lg font-semibold">説明は1〜2文で簡潔に</p>
+                <p class="mt-2 text-sm leading-7 text-slate-300">読む人が一覧で判断しやすいよう、概要は短く、用途が伝わる言葉でまとめます。</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <p class="text-sm font-semibold text-sky-300">04</p>
+                <p class="mt-3 text-lg font-semibold">ツール名や用途を明記する</p>
+                <p class="mt-2 text-sm leading-7 text-slate-300">どの場面で役立つ情報なのかが一目でわかるよう、タイトルとカテゴリをそろえます。</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-5 md:col-span-2">
+                <p class="text-sm font-semibold text-sky-300">05</p>
+                <p class="mt-3 text-lg font-semibold">更新日をなるべく残す</p>
+                <p class="mt-2 text-sm leading-7 text-slate-300">情報の鮮度が判断できるよう、カードごとに更新日を記載して運用します。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-slate-200 py-8">
+      <div class="flex flex-col gap-4 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="font-semibold text-slate-700">AI Share Board</p>
+          <p class="mt-1">GitHub Pages でもそのまま公開しやすい 1 ファイル構成</p>
+        </div>
+        <div class="text-left sm:text-right">
+          <p>Last updated: 2026.03.28</p>
+          <p class="mt-1">© 2026 Team AI Hub</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll(".member-tab");
+    const panels = document.querySelectorAll(".member-panel");
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const target = tab.dataset.target;
+
+        tabs.forEach((item) => {
+          item.classList.remove("tab-active");
+          item.classList.add("border", "border-slate-200", "bg-white", "text-slate-600");
+        });
+
+        tab.classList.add("tab-active");
+        tab.classList.remove("border", "border-slate-200", "bg-white", "text-slate-600");
+
+        panels.forEach((panel) => {
+          panel.classList.toggle("panel-hidden", panel.dataset.panel !== target);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
